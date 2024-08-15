@@ -11,19 +11,19 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
+  title='angular_17_crud_localstorage';
   @ViewChild('myModal') model: ElementRef | undefined;
   studentObj: Student = new Student();
   studentList: Student[] = [];
 
   ngOnInit(): void {
     const localData = localStorage.getItem("angular17crud");
-    if(localData != null) {
+    if (localData != null) {
       this.studentList = JSON.parse(localData)
     }
   }
 
   openModel() {
-    
     const model = document.getElementById("myModal");
     if (model != null) {
       model.style.display = 'block'
@@ -38,33 +38,37 @@ export class AppComponent implements OnInit {
   }
 
   onDelete(item: Student) {
-    const isDelet = confirm("Are you sure want to Delete");
-    if(isDelet) {
-      const currentRecord =  this.studentList.findIndex(m=> m.id === this.studentObj.id);
-      this.studentList.splice(currentRecord,1);
-      localStorage.setItem('angular17crud', JSON.stringify(this.studentList));
+    const isDelet = confirm('Are you sure want to Delete');
+    if (isDelet) {
+      const currentRecord = this.studentList.findIndex((m) => m.id === item.id);
+      if (currentRecord !== -1) {
+        this.studentList.splice(currentRecord, 1);
+        localStorage.setItem('angular17crud', JSON.stringify(this.studentList));
+      }
     }
   }
+
   onEdit(item: Student) {
-    this.studentObj =  item;
+    this.studentObj = item;
     this.openModel();
   }
 
   updateStud() {
-      const currentRecord =  this.studentList.find(m=> m.id === this.studentObj.id);
-      if(currentRecord != undefined) {
-        currentRecord.name = this.studentObj.name;
-        currentRecord.address =  this.studentObj.address;
-        currentRecord.mobileNo =  this.studentObj.mobileNo;
-      };
-      localStorage.setItem('angular17crud', JSON.stringify(this.studentList));
-      this.closeModel()
+    const currentRecord = this.studentList.find(m => m.id === this.studentObj.id);
+    if (currentRecord != undefined) {
+      currentRecord.name = this.studentObj.name;
+      currentRecord.address = this.studentObj.address;
+      currentRecord.mobileNo = this.studentObj.mobileNo;
+    };
+    localStorage.setItem('angular17crud', JSON.stringify(this.studentList));
+    this.closeModel()
   }
+  
   saveStudent() {
     debugger;
     const isLocalPresent = localStorage.getItem("angular17crud");
     if (isLocalPresent != null) {
-      
+
       const oldArray = JSON.parse(isLocalPresent);
       this.studentObj.id = oldArray.length + 1;
       oldArray.push(this.studentObj);
